@@ -3,16 +3,18 @@ from os import getenv
 from uuid import uuid4
 
 import jwt
+from jwt.exceptions import InvalidTokenError
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 
 ACCESS_TOKEN_EXPIRE_SECONDS = 300
 JWT_ALGORITHM = "HS256"
-JWT_SECRET_KEY = getenv(
-    "JWT_SECRET_KEY", "change-me-in-production-with-32chars"
-)
-VALID_USERNAME = "admin"
-VALID_PASSWORD = "admin123"
+JWT_SECRET_KEY = getenv("JWT_SECRET_KEY")
+if not JWT_SECRET_KEY:
+    raise RuntimeError("JWT_SECRET_KEY environment variable is required")
+
+VALID_USERNAME = getenv("AUTH_USERNAME", "admin")
+VALID_PASSWORD = getenv("AUTH_PASSWORD", "admin123")
 
 app = FastAPI(title="JWT Demo API", version="1.0.0")
 
@@ -47,7 +49,7 @@ def create_access_token(subject: str) -> str:
 def decode_token(token: str) -> dict:
     try:
         return jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
-    except jwt.PyJWTError as exc:
+    except InvalidTokenError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",

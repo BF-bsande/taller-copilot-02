@@ -8,8 +8,8 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir "poetry==$POETRY_VERSION"
 
-COPY pyproject.toml ./
-RUN poetry config virtualenvs.create false && poetry install --no-root --only main
+COPY pyproject.toml poetry.lock ./
+RUN poetry config virtualenvs.create false && poetry install --no-root --only main --no-interaction
 
 COPY app ./app
 

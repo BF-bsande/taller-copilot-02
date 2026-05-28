@@ -6,4 +6,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      JWT_SECRET_KEY: super-secret-key-with-at-least-32chars
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?JWT_SECRET_KEY must be set}
+      AUTH_USERNAME: ${AUTH_USERNAME:-admin}
+      AUTH_PASSWORD: ${AUTH_PASSWORD:-admin123}

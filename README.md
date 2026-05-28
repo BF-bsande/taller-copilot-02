@@ -35,7 +35,11 @@ docker-compose.yml
    cd backend
    poetry install
    ```
-3. Ejecutar la API:
+3. Definir secreto JWT (mínimo recomendado: 32 caracteres):
+   ```bash
+   export JWT_SECRET_KEY="tu-secreto-super-seguro-de-32-caracteres"
+   ```
+4. Ejecutar la API:
    ```bash
    poetry run uvicorn app.main:app --reload
    ```
@@ -65,6 +69,7 @@ curl -X POST http://localhost:8000/refresh \
 Desde la raíz del proyecto:
 
 ```bash
+export JWT_SECRET_KEY="tu-secreto-super-seguro-de-32-caracteres"
 docker compose up --build
 ```
 
