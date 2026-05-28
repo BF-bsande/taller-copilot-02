@@ -1,32 +1,40 @@
 # taller-copilot-02
 
-## Backend con FastAPI + JWT
+Proyecto con backend en FastAPI (JWT) y frontend en React para autenticación.
 
-Se agregó una carpeta `backend/` con una API Web construida en **Python + FastAPI** y gestionada con **Poetry**.
-
-### Funcionalidades
-
-- `POST /token`: recibe `username` y `password`.
-  - Credenciales válidas:
-    - `username`: `admin`
-    - `password`: `admin123`
-  - Respuesta: token JWT con expiración de **300 segundos**.
-- `POST /refresh`: recibe un token JWT válido y devuelve un nuevo token con 300 segundos de expiración.
-
-### Estructura
+## Estructura
 
 ```text
 backend/
 ├── app/
 │   └── main.py
 ├── Dockerfile
+├── poetry.lock
 └── pyproject.toml
+frontend/
+├── src/
+│   ├── App.jsx
+│   └── index.css
+└── package.json
+DESIGN.md
 docker-compose.yml
 ```
 
+## Backend (FastAPI + JWT)
+
+### Funcionalidades
+
+- `POST /token`: recibe `username` y `password`, y devuelve JWT.
+- `POST /refresh`: recibe un token válido y devuelve uno nuevo.
+
+Credenciales por defecto:
+
+- `username`: `admin`
+- `password`: `admin123`
+
 ### Uso local con Poetry
 
-1. Instalar Poetry (si no lo tienes):
+1. Instalar Poetry:
    ```bash
    pip install poetry
    ```
@@ -35,36 +43,56 @@ docker-compose.yml
    cd backend
    poetry install
    ```
-3. Definir secreto JWT (mínimo recomendado: 32 caracteres):
+3. Definir secreto JWT:
    ```bash
    export JWT_SECRET_KEY="tu-secreto-super-seguro-de-32-caracteres"
    ```
-4. Ejecutar la API:
+4. Ejecutar backend:
    ```bash
    poetry run uvicorn app.main:app --reload
    ```
 
-La API quedará disponible en `http://localhost:8000`.
+Backend disponible en: `http://localhost:8000`
 
-### Ejemplos de uso
+## Frontend (React + Vite)
 
-Obtener token:
+### Funcionalidades
 
-```bash
-curl -X POST http://localhost:8000/token \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
-```
+- Página de login (`/login`).
+- Página de bienvenida (`/welcome`).
+- Inicio de sesión consumiendo `POST /token` del backend.
+- Token guardado en `sessionStorage`.
+- Acceso protegido: si no hay sesión activa, no se permite ingresar a `/welcome`.
+- Estilos basados en el estándar definido en `DESIGN.md`.
 
-Refrescar token:
+### Uso local
 
-```bash
-curl -X POST http://localhost:8000/refresh \
-  -H "Content-Type: application/json" \
-  -d '{"token":"<TOKEN_AQUI>"}'
-```
+1. Instalar dependencias:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. (Opcional) Configurar URL del backend:
+   ```bash
+   export VITE_API_BASE_URL="http://localhost:8000"
+   ```
+3. Ejecutar frontend:
+   ```bash
+   npm run dev
+   ```
 
-### Uso con Docker
+Frontend disponible en: `http://localhost:5173`
+
+### Flujo de uso
+
+1. Iniciar backend.
+2. Iniciar frontend.
+3. Ir a `http://localhost:5173/login`.
+4. Iniciar sesión con `admin / admin123`.
+5. Al autenticarse, se redirige a `http://localhost:5173/welcome`.
+6. Usar “Cerrar sesión” para invalidar la sesión del navegador.
+
+## Docker (backend)
 
 Desde la raíz del proyecto:
 
@@ -72,5 +100,3 @@ Desde la raíz del proyecto:
 export JWT_SECRET_KEY="tu-secreto-super-seguro-de-32-caracteres"
 docker compose up --build
 ```
-
-Esto levanta el servicio en `http://localhost:8000`.
