@@ -197,7 +197,7 @@ function WelcomePage({ onLogout }) {
         <section className="certifications-section">
           <h2 className="certifications-title">Certificaciones Microsoft 2026</h2>
           <p className="certifications-subtitle">
-            Últimas certificaciones disponibles obtenidas desde Microsoft Learn
+            Selección de certificaciones disponibles en 2026, basada en información de Microsoft Learn
           </p>
           <div className="certifications-grid">
             {CERTIFICATIONS.map((cert) => (
